@@ -2,7 +2,6 @@ const express = require('express')
 const socket = require('socket.io')
 const root = require('./router')
 const http = require('http')
-const cors = require('cors')
 
 var app = express()
 var port = process.env.PORT || 3000
@@ -11,7 +10,6 @@ var server = http.createServer(app)
 var io = socket(server)
 app.use(express.static('public'))
 app.use(root.router)
-app.use(cors)
 
 let interval
 

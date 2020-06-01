@@ -1,17 +1,19 @@
 {
-  "name": "Kanesa-service",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "server",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./bin/www"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
+    "body-parser": "1.19.0",
+    "cookie-parser": "^1.4.5",
+    "debug": "^4.1.1",
     "express": "^4.17.1",
+    "http-errors": "^1.7.3",
+    "jade": "^1.11.0",
+    "morgan": "^1.10.0",
+    "cors": "^2.8.5",
     "mysql": "^2.18.1",
     "socket.io": "^2.3.0"
   }
