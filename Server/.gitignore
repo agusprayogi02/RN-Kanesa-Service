@@ -1,0 +1,4 @@
+# development
+/ssl
+  server.crt
+  server.key
