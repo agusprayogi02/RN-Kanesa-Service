@@ -7,6 +7,7 @@
 var app = require('../app')
 var debug = require('debug')('server:server')
 var http = require('http')
+var socket = require('socket.io')
 
 /**
  * Get port from environment and store in Express.
@@ -83,4 +84,28 @@ function onListening() {
   var addr = server.address()
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
+}
+
+// socker.io
+
+var io = socket(server)
+
+let interval
+io.on('connection', (socket) => {
+  console.log(`New client ${socket.id} connected`)
+  if (interval) {
+    clearInterval(interval)
+  }
+  interval = setInterval(() => getApiAndEmit(socket), 1000)
+  // socket.on('getUser', function (params) {})
+  socket.on('disconnect', () => {
+    console.log(`Client ${socket.id} disconnected`)
+    clearInterval(interval)
+  })
+})
+
+const getApiAndEmit = (socket) => {
+  const response = new Date()
+  // Emitting a new message. Will be consumed by the client
+  socket.emit('FromAPI', response)
 }
