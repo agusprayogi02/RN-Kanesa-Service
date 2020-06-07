@@ -15,4 +15,7 @@ export default StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
   },
+  headText: {
+    fontSize: 30,
+  },
 });

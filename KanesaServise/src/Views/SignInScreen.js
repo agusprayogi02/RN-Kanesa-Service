@@ -4,16 +4,35 @@ import GStyles from '../Assets/style';
 import {Card, Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+const auth = React.createContext();
+const {} = React.useContext(auth);
+
 class SignInScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      visible: true,
+      icon: 'eye',
+    };
   }
+
+  visiblePassword = () => {
+    var {visible} = this.state;
+    if (visible) {
+      this.setState({visible: false, icon: 'eye-slash'});
+    } else {
+      this.setState({visible: true, icon: 'eye'});
+    }
+  };
 
   render() {
     const {navigation} = this.props;
     return (
       <View style={styles.container}>
-        <Card title="Sign In" containerStyle={GStyles.cardBG}>
+        <Card
+          title="Sign In"
+          containerStyle={GStyles.cardBG}
+          titleStyle={GStyles.headText}>
           <Input
             placeholder="Masukkan email..."
             label="Email"
@@ -23,11 +42,14 @@ class SignInScreen extends Component {
           <Input
             placeholder="Masukkan Password"
             label="Password"
-            keyboardType="visible-password"
             leftIcon={<Icon name="lock" size={24} />}
-            secureTextEntry
+            secureTextEntry={this.state.visible}
             rightIcon={
-              <Button type="clear" icon={<Icon name="eye" size={24} />} />
+              <Button
+                type="clear"
+                icon={<Icon name={this.state.icon} size={24} />}
+                onPress={() => this.visiblePassword()}
+              />
             }
           />
           <View style={styles.text}>
@@ -52,6 +74,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
     flexDirection: 'row',
