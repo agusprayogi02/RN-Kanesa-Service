@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import * as React from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -9,9 +10,11 @@ import ProfileScreen from './src/Views/ProfileScreen';
 import SignInScreen from './src/Views/SignInScreen';
 import SignUpScreen from './src/Views/SignUpScreen';
 import css from './src/Assets/style';
+import {postLogin} from './src/Components/Api';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const AuthContext = React.createContext();
 
 const Auth = () => {
   return (
@@ -64,9 +67,75 @@ const Home = () => {
   );
 };
 
-export default function App() {
-  const [login, setLogin] = useState(false);
+export default function App({navigation}) {
+  const [state, dispatch] = React.useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    },
+  );
+
+  React.useEffect(() => {
+    const bootAsync = async () => {
+      let userToken;
+
+      try {
+        userToken = await AsyncStorage.getItem('userToken');
+      } catch (e) {}
+      dispatch({type: 'RESTORE_TOKEN', token: userToken});
+    };
+    bootAsync();
+  }, []);
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: async (data) => {
+        postLogin('api/login', data).then((data) => {
+          dispatch({type: 'SIGN_IN', token: data[0]});
+        });
+      },
+      signOut: () => dispatch({type: 'SIGN_OUT'}),
+      signUp: async (data) => {
+        dispatch({type: 'SIGN_IN', token: 'dummy-auth-token'});
+      },
+    }),
+    [],
+  );
+
   return (
-    <NavigationContainer>{login ? <Home /> : <Auth />}</NavigationContainer>
+    <AuthContext.Provider value={authContext}>
+      <NavigationContainer>
+        <Stack.Navigator headerMode="none">
+          {state.userToken == null ? (
+            <Stack.Screen name="Auth" component={Auth} />
+          ) : (
+            <Stack.Screen name="Utama" component={Home} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthContext.Provider>
   );
 }

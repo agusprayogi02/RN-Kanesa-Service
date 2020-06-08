@@ -14,7 +14,7 @@ export default PesananScreen = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch(BASE_URL + 'api/user')
+    fetch(BASE_URL + 'api/users')
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => console.error(error))

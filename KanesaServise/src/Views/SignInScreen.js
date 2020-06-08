@@ -3,9 +3,10 @@ import {View, Text, StyleSheet} from 'react-native';
 import GStyles from '../Assets/style';
 import {Card, Input, Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {validasiEmail, validasiPass} from '../Components/Validasi';
 
-const auth = React.createContext();
-const {} = React.useContext(auth);
+// const AuthContext = React.createContext();
+// const {signIn} = React.useContext(AuthContext);
 
 class SignInScreen extends Component {
   constructor(props) {
@@ -13,6 +14,10 @@ class SignInScreen extends Component {
     this.state = {
       visible: true,
       icon: 'eye',
+      email: '',
+      password: '',
+      errEm: '',
+      errPass: '',
     };
   }
 
@@ -24,6 +29,17 @@ class SignInScreen extends Component {
       this.setState({visible: true, icon: 'eye'});
     }
   };
+
+  Login() {
+    var {email, password} = this.state;
+    var em = validasiEmail(email),
+      pas = validasiPass(password);
+    if (em != null) {
+      this.setState({errEm: em});
+    } else if (pas != null) {
+      this.setState({errPass: pas});
+    }
+  }
 
   render() {
     const {navigation} = this.props;
@@ -38,6 +54,8 @@ class SignInScreen extends Component {
             label="Email"
             keyboardType="email-address"
             leftIcon={<Icon name="envelope" size={24} />}
+            onChangeText={(e) => this.setState({email: e, errEm: ''})}
+            errorMessage={this.state.errEm}
           />
           <Input
             placeholder="Masukkan Password"
@@ -51,6 +69,8 @@ class SignInScreen extends Component {
                 onPress={() => this.visiblePassword()}
               />
             }
+            onChangeText={(e) => this.setState({password: e, errPass: ''})}
+            errorMessage={this.state.errPass}
           />
           <View style={styles.text}>
             <Text>Belum Punya Akun?</Text>
@@ -62,7 +82,7 @@ class SignInScreen extends Component {
               Daftar
             </Text>
           </View>
-          <Button title="Sign In" type="outline" />
+          <Button title="Sign In" type="outline" onPress={() => this.Login()} />
         </Card>
       </View>
     );

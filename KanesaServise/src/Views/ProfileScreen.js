@@ -12,7 +12,7 @@ class ProfileScreen extends Component {
   }
 
   getdata() {
-    getFetch('api/user').then((data) => this.setState({data: data}));
+    getFetch('api/users').then((data) => this.setState({data: data}));
   }
 
   render() {

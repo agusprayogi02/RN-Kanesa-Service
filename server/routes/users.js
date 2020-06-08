@@ -28,12 +28,13 @@ router.post('/make', function (req, res, next) {
     jenisK: req.body.jenis,
     level: req.body.level,
     status: 1,
+    createdAt: new Date().getTime(),
   }
   let sql = 'INSERT INTO users SET ?'
-  let query = conn.query(sql, data, (err, rows) => {
+  conn.query(sql, data, (err, rows) => {
     if (err) throw err
     res.end(JSON.stringify(data))
-  })
+  }) 
 })
 
 router.post('/login', (req, res, next) => {
