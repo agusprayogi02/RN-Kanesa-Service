@@ -46,11 +46,11 @@ const Home = () => {
           let iconName;
 
           if (route.name === 'Home') {
-            iconName = focused ? 'ios-home' : 'md-home';
+            iconName = focused ? 'ios-home' : 'ios-home-outline';
           } else if (route.name === 'Pesanan') {
-            iconName = focused ? 'ios-basket' : 'md-basket';
+            iconName = focused ? 'ios-basket' : 'ios-basket-outline';
           } else if (route.name === 'Profil') {
-            iconName = focused ? 'ios-person' : 'md-person';
+            iconName = focused ? 'ios-person' : 'ios-person-outline';
           }
           return <Ionicons name={iconName} size={size} color={color} />;
         },

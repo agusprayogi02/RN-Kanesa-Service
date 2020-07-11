@@ -1,14 +1,13 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import * as React from 'react';
+import {View, StyleSheet} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import GStyles from '../Assets/style';
-import {Card, Input, Button} from 'react-native-elements';
+import {Card, Input, Button, Text} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {validasiEmail, validasiPass} from '../Components/Validasi';
+import {addAS} from '../Components/AsyncStorage';
 
-// const AuthContext = React.createContext();
-// const {signIn} = React.useContext(AuthContext);
-
-class SignInScreen extends Component {
+class SignInScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,6 +17,7 @@ class SignInScreen extends Component {
       password: '',
       errEm: '',
       errPass: '',
+      err: false,
     };
   }
 
@@ -38,6 +38,25 @@ class SignInScreen extends Component {
       this.setState({errEm: em});
     } else if (pas != null) {
       this.setState({errPass: pas});
+    } else {
+      var data = {email: email, password: password};
+      addAS(data).then((d) => {
+        if (d == []) {
+          this.setState({err: true});
+        } else {
+          // this.props.navigation.navigate('Utama');
+          this.move(d);
+        }
+      });
+    }
+  }
+
+  async move(value) {
+    try {
+      var json = JSON.stringify(value);
+      await AsyncStorage.setItem('userToken', json);
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -49,6 +68,11 @@ class SignInScreen extends Component {
           title="Sign In"
           containerStyle={GStyles.cardBG}
           titleStyle={GStyles.headText}>
+          <View style={styles.text}>
+            {this.state.err && (
+              <Text style={{color: 'red'}}>Email Atau Password Salah!!</Text>
+            )}
+          </View>
           <Input
             placeholder="Masukkan email..."
             label="Email"

@@ -43,7 +43,7 @@ router.post('/login', (req, res, next) => {
   let sql = 'SELECT * FROM users WHERE ? AND ?'
   let error = {error: 'Email atau Password Salah!'}
   conn.query(sql, [email, pass], (err, rows) => {
-    if (err) throw err
+    if (err) throw error
     res.end(JSON.stringify(rows))
   })
 })

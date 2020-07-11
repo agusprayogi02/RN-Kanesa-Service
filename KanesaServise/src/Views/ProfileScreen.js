@@ -20,7 +20,7 @@ class ProfileScreen extends Component {
       <FlatList
         style={{flex: 1, padding: 24}}
         data={this.state.data}
-        keyExtractor={({uid}, index) => uid}
+        keyExtractor={({uid}) => uid}
         renderItem={({item}) => (
           <View>
             <Text>{item.uid}</Text>
